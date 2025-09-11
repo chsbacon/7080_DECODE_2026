@@ -26,7 +26,7 @@ public class Auto_Teach extends LinearOpMode {
         Pose2d startPose = new Pose2d(56, -60, Math.PI/2);
 
         drive.setPoseEstimate(startPose);
-
+//nineminenine
         TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
                 //.setConstrai  nts(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 //.followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(56, -60, Math.PI/2))
