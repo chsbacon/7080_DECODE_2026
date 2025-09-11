@@ -30,6 +30,7 @@ public class Auto_Teach extends LinearOpMode {
         TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
                 //.setConstrai  nts(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 //.followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(56, -60, Math.PI/2))
+
                 .splineToConstantHeading(new Vector2d(0,-20), 2*Math.PI/3)
                 .splineToConstantHeading(new Vector2d(0,15), Math.PI/3)
                 .splineToConstantHeading(new Vector2d(14,23),0)
