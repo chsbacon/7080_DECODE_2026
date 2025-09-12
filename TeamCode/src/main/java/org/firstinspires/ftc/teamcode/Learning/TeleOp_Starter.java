@@ -1,15 +1,19 @@
 package org.firstinspires.ftc.teamcode.Learning;
 
+/*
+lfPower = Y + X + R;
+rfPower = Y - X - R;
+lbPower = Y - X + R;
+rbPower = Y + X - R;
+*/
+
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@TeleOp(name = "TeleOp_Starter")
-public class TeleOp_Starter extends LinearOpMode {
+public class TeleOp_Starter {
 
-    @Override
-    public void runOpMode() throws InterruptedException {
 
-    }
+
 }
