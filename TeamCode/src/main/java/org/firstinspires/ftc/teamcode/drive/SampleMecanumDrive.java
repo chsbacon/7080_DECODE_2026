@@ -97,7 +97,6 @@ public class SampleMecanumDrive extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
@@ -110,6 +109,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         for (DcMotorEx motor : motors) {
             MotorConfigurationType motorConfigurationType = motor.getMotorType().clone();
             motorConfigurationType.setAchieveableMaxRPMFraction(1.0);
@@ -120,17 +122,14 @@ public class SampleMecanumDrive extends MecanumDrive {
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        //leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        //leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
@@ -291,7 +290,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
 
-        v = (1 - SMOOTH) * oldV + SMOOTH * v;
+        v  = (1 - SMOOTH) * oldV  + SMOOTH * v;
         v1 = (1 - SMOOTH) * oldV1 + SMOOTH * v1;
         v2 = (1 - SMOOTH) * oldV2 + SMOOTH * v2;
         v3 = (1 - SMOOTH) * oldV3 + SMOOTH * v3;
@@ -301,13 +300,29 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear.setPower(v2);
         rightFront.setPower(v3);
 
-        oldV = v;
+        oldV  = v;
         oldV1 = v1;
         oldV2 = v2;
         oldV3 = v3;
 
     }
 
+    public double[] fieldOrientedDrive(double x, double y) {
+
+        double radius = Math.sqrt(x * x + y * y);
+
+        //if(radius!=radius)
+        //    radius=0;
+
+        double theta = (Math.atan2(y, x)) + getRawExternalHeading();
+
+        double[] outputCoords = new double[2];
+
+        outputCoords[0] = Math.abs((radius * Math.cos(theta))) < 0.01 ? 0.0 : radius * Math.cos(theta);
+        outputCoords[1] = Math.abs((radius * Math.sin(theta)))< 0.01 ? 0.0 :(radius * Math.sin(theta));
+
+        return outputCoords;
+    }
     @Override
     public double getRawExternalHeading() {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
