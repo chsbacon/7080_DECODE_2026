@@ -290,10 +290,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
 
-        v  = (1 - SMOOTH) * oldV  + SMOOTH * v;
-        v1 = (1 - SMOOTH) * oldV1 + SMOOTH * v1;
-        v2 = (1 - SMOOTH) * oldV2 + SMOOTH * v2;
-        v3 = (1 - SMOOTH) * oldV3 + SMOOTH * v3;
+        if (v != 0) v  = (1 - SMOOTH) * oldV  + SMOOTH * v;
+        if (v1 != 0) v1 = (1 - SMOOTH) * oldV1 + SMOOTH * v1;
+        if (v2 != 0) v2 = (1 - SMOOTH) * oldV2 + SMOOTH * v2;
+        if (v3 != 0) v3 = (1 - SMOOTH) * oldV3 + SMOOTH * v3;
+        //Meaning as long as the joystick is not at 0 apply smoothing
+        //We do this to allow very fast and efficient stops (I think)
 
         leftFront.setPower(v);
         leftRear.setPower(v1);
@@ -310,10 +312,6 @@ public class SampleMecanumDrive extends MecanumDrive {
     public double[] fieldOrientedDrive(double x, double y) {
 
         double radius = Math.sqrt(x * x + y * y);
-
-        //if(radius!=radius)
-        //    radius=0;
-
         double theta = (Math.atan2(y, x)) + getRawExternalHeading();
 
         double[] outputCoords = new double[2];
