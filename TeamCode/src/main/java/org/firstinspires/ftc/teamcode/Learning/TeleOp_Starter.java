@@ -1,19 +1,17 @@
 package org.firstinspires.ftc.teamcode.Learning;
 
-/*
-lfPower = Y + X + R;
-rfPower = Y - X - R;
-lbPower = Y - X + R;
-rbPower = Y + X - R;
-*/
-
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-public class TeleOp_Starter {
+@TeleOp(name = "TeleOp_Starter")
+public class TeleOp_Starter extends LinearOpMode{
+  
+        waitForStart();
 
+        while(opModeIsActive()) {
 
+          
 
+        }
 }
