@@ -19,15 +19,20 @@ public class TeleOp_Starter extends LinearOpMode{
         double speedMultiplier = 1;
         boolean debounce = false;
         //variables for speed manipulation
+
+
         while(opModeIsActive()) {
 
             double max;
 
-            boolean dUp = gamepad1.dpad_up;
-            boolean dDown = gamepad1.dpad_down;
-            boolean dRight = gamepad1.dpad_right;
-            boolean dLeft = gamepad1.dpad_left;
-            // dpad controls for speed manipulation
+            boolean bRight = gamepad1.right_bumper;
+            boolean bLeft = gamepad1.left_bumper;
+            // Bumper controls for speed manipulation
+
+            float tRight = gamepad1.right_trigger;
+            float tLeft = gamepad1.left_trigger;
+            // triggers give a float from 0-1 instead of just a binary because why the hell not
+            // trigger PLACEHOLDER controls for the aiming and firing
 
             double xInput = gamepad1.left_stick_x;
             double yInput = gamepad1.left_stick_y;
@@ -53,27 +58,37 @@ public class TeleOp_Starter extends LinearOpMode{
             max = Math.max(max, Math.abs(rightBackPower));
             //Limits power to 1.0 and translates other values relative to the maximum value
 
-            if (dDown && !debounce && speedMultiplier > 0.2){
+            if (bLeft && !debounce && speedMultiplier > 0.25){
 
-                speedMultiplier -= 0.2;
+                speedMultiplier -= 0.25;
                 debounce = true;
 
             }
             // decreases speed multiplier
-            if (dUp && !debounce && speedMultiplier < 1){
+            if (bRight && !debounce && speedMultiplier < 1){
 
-                speedMultiplier += 0.2;
+                speedMultiplier += 0.25;
                 debounce = true;
 
             }
             // increases speed multiplier
-            if(!dUp && !dDown) debounce = false;
+            if(!bRight && !bLeft) debounce = false;
 
-            // debounce code where speedMultiplier only changes once per press
-            if (dRight) speedMultiplier = 1;
-            //resets speedMultiplier to max
-            if (dLeft) speedMultiplier = 0.2;
-            //sets speedMultiplier to min (will probably be removed because of how useless this will probably be)
+            if (speedMultiplier < 0.25) speedMultiplier = 0.25;
+
+            if (tLeft > 0.5){
+
+                // do something with apriltag, either aiming at them or aiming and moving to a certain spot
+
+            }
+            // aims at apriltag or moves to certain spot relative to apriltag and also aims at it
+
+            if (tRight > 0.5){
+
+                // shoot the ball
+
+            }
+            //shoots ball whe right trigger is pressed
 
             if (max > 1.0) {
 
@@ -100,8 +115,10 @@ public class TeleOp_Starter extends LinearOpMode{
             telemetry.addData("Back  Left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 
             telemetry.addData("Speed multiplier", speedMultiplier);
-            telemetry.addData("dPadUp", dUp);
-            telemetry.addData("dPadDown", dDown);
+            telemetry.addData("rightBumper", bRight);
+            telemetry.addData("leftBumper", bLeft);
+            telemetry.addData("rightTrigger",tRight);
+            telemetry.addData("leftTrigger", tLeft);
 
             telemetry.update();
 
