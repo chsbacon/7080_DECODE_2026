@@ -28,7 +28,7 @@ public class TeleOp_Starter extends LinearOpMode{
             boolean dRight = gamepad1.dpad_right;
             boolean dLeft = gamepad1.dpad_left;
             // dpad controls for speed manipulation
-
+//trying to push
             double xInput = gamepad1.left_stick_x;
             double yInput = gamepad1.left_stick_y;
             double rotationalInput = gamepad1.right_stick_x;
