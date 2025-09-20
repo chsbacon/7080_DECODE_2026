@@ -18,6 +18,7 @@ public class TeleOp_Starter extends LinearOpMode{
 
         double speedMultiplier = 1;
         boolean debounce = false;
+        boolean smoothToggle = false;
         //variables for speed manipulation
 
 
@@ -25,12 +26,14 @@ public class TeleOp_Starter extends LinearOpMode{
 
             double max;
 
+            boolean faceButtonB = gamepad1.b;
+
             boolean bRight = gamepad1.right_bumper;
             boolean bLeft = gamepad1.left_bumper;
             // Bumper controls for speed manipulation
 
-            float tRight = gamepad1.right_trigger;
-            float tLeft = gamepad1.left_trigger;
+            float tRight = gamepad2.right_trigger;
+            float tLeft = gamepad2.left_trigger;
             // triggers give a float from 0-1 instead of just a binary because why the hell not
             // trigger PLACEHOLDER controls for the aiming and firing
 
@@ -122,8 +125,20 @@ public class TeleOp_Starter extends LinearOpMode{
 
             telemetry.update();
 
-            //Smoothing is implemented within the setMotorPowers method
-            mecanumDrive.setMotorPowers(leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
+            if (faceButtonB && !smoothToggle) {
+
+                smoothToggle = true;
+
+                mecanumDrive.setMotorPowers(leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
+                //Smoothing is implemented within the setMotorPowers method
+
+           }
+            else {
+
+                smoothToggle = false;
+
+            }
+            //this SHOULD make the smoothing toggleable with the b button
 
 
 
