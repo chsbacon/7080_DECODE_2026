@@ -19,6 +19,7 @@ public class TeleOp_Starter extends LinearOpMode{
         double speedMultiplier = 1;
         boolean debounce = false;
         //variables for speed manipulation
+
         while(opModeIsActive()) {
 
             double max;
@@ -84,6 +85,7 @@ public class TeleOp_Starter extends LinearOpMode{
 
             }
             // if max is more than one make it one
+
             leftFrontPower *= speedMultiplier;
             rightFrontPower *= speedMultiplier;
             leftBackPower *= speedMultiplier;
@@ -100,8 +102,6 @@ public class TeleOp_Starter extends LinearOpMode{
             telemetry.addData("Back  Left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 
             telemetry.addData("Speed multiplier", speedMultiplier);
-            telemetry.addData("dPadUp", dUp);
-            telemetry.addData("dPadDown", dDown);
 
             telemetry.update();
 
