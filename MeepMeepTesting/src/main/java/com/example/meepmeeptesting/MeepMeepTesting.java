@@ -29,11 +29,33 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(61.5, 20, Math.PI))
 
                 //.splineTo(new Vector2d(30,30), Math.toRadians(180))
                 //.splineToConstantHeading(new Vector2d(0,0), Math.PI)
-                .splineToSplineHeading(new Pose2d(30,30, 3*Math.PI/2), 3*Math.PI/2)
+                .splineToSplineHeading(new Pose2d(-31.5,21.5, 3*Math.PI/4), 3*Math.PI/4)
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(-28.9, 21.51))
+                        .splineToSplineHeading(new Pose2d(-12, 30, 3*Math.PI/2), Math.PI/2)
+
+                        .strafeTo(new Vector2d(-12, 45))
+                        .waitSeconds(1)
+                        .splineToSplineHeading(new Pose2d(-31.5,21.5, 3*Math.PI/4), 3*Math.PI/4)
+                        .waitSeconds(1)
+                        .strafeTo(new Vector2d(-28.9, 21.51))
+                        .splineToSplineHeading(new Pose2d(12, 30, 3*Math.PI/2), Math.PI/2)
+
+                        .strafeTo(new Vector2d(12, 45))
+                        .waitSeconds(1)
+                .splineToSplineHeading(new Pose2d(-31.5,21.5, 3*Math.PI/4), 3*Math.PI/4)
+                .waitSeconds(1)
+                        .strafeTo(new Vector2d(-28.9, 21.51))
+                        .splineToSplineHeading(new Pose2d(36, 30, 3*Math.PI/2), Math.PI/2)
+
+                        .strafeTo(new Vector2d(36, 45))
+                        .waitSeconds(1)
+                .splineToSplineHeading(new Pose2d(-31.5,21.5, 3*Math.PI/4), 3*Math.PI/4)
+                .waitSeconds(1)
                 .build());
 
         meepMeep.setBackground(img)

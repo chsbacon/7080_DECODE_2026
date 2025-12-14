@@ -17,8 +17,8 @@ public class TeleOp_Starter extends LinearOpMode{
 
             double max;
 
-            double xInput = gamepad1.left_stick_x;
-            double yInput = gamepad1.left_stick_y;
+            double xInput = -gamepad1.left_stick_x;
+            double yInput = -gamepad1.left_stick_y;
             double rotationalInput = gamepad1.right_stick_x;
 
             double[] FODvalue = mecanumDrive.fieldOrientedDrive(xInput, yInput);
@@ -26,7 +26,7 @@ public class TeleOp_Starter extends LinearOpMode{
             xInput = FODvalue[0];
             yInput = FODvalue[1];
 
-            double Speed = yInput;
+            double Speed = -yInput;
             double Strafe = xInput;
             double Turn = -rotationalInput;
 
