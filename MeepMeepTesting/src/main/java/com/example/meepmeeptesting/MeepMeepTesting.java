@@ -20,7 +20,7 @@ public class MeepMeepTesting {
         try {
             // Replace "your_image_name.png" with your actual file name
             // You need to ensure the file path is correct for your project structure
-            img = ImageIO.read(new File("C:/Users/alsto/StudioProjects/7080_DECODE_2026/FtcRobotController/src/main/res/drawable-xhdpi/field-2025-juice-dark.png"));
+            img = ImageIO.read(new File("FtcRobotController/src/main/res/drawable-xhdpi/field-2025-juice-dark.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
