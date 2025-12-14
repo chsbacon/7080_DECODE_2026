@@ -12,14 +12,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-//noah test for pushing but like for real j
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
         Image img = null;
         try {
-            // Replace "your_image_name.png" with your actual file name
-            // You need to ensure the file path is correct for your project structure
+
             img = ImageIO.read(new File("FtcRobotController/src/main/res/drawable-xhdpi/field-2025-juice-dark.png"));
         } catch (IOException e) {
             e.printStackTrace();
