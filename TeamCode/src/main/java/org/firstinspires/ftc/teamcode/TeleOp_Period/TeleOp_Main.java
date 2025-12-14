@@ -60,6 +60,7 @@ public class TeleOp_Main extends LinearOpMode{
             telemetry.addData("Front Left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  Left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 
+
             telemetry.update();
 
             //Smoothing is implemented within the setMotorPowers method
