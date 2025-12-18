@@ -2,7 +2,11 @@ package org.firstinspires.ftc.teamcode.Learning;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
+
 
 @TeleOp(name = "TeleOp_Starter")
 public class TeleOp_Starter extends LinearOpMode{
@@ -14,6 +18,7 @@ public class TeleOp_Starter extends LinearOpMode{
         SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(hardwareMap);
         //Sets up all motors and other configurations
 
+
         waitForStart();
 
         double speedMultiplier = 1;
@@ -21,10 +26,18 @@ public class TeleOp_Starter extends LinearOpMode{
         boolean smoothToggle = false;
         //variables for speed manipulation
 
+        CRServo servo;
+
+        servo = hardwareMap.get(CRServo.class, "servo");
+
+        boolean servoState = false;
+        boolean aDebounce = false;
 
         while(opModeIsActive()) {
 
             double max;
+
+            boolean faceButtonA = gamepad1.a;
 
             boolean faceButtonB = gamepad1.b;
 
@@ -50,10 +63,10 @@ public class TeleOp_Starter extends LinearOpMode{
             double leftFrontPower, leftBackPower, rightFrontPower, rightBackPower;
 
             //Mecanum wheel equations
-            leftFrontPower = yOutput - xOutput - rotationalInput;
-            rightFrontPower = yOutput - xOutput + rotationalInput;
-            leftBackPower = yOutput + xOutput - rotationalInput;
-            rightBackPower = yOutput + xOutput + rotationalInput;
+            leftFrontPower = yOutput + xOutput - rotationalInput;
+            rightFrontPower = yOutput + xOutput + rotationalInput;
+            leftBackPower = yOutput - xOutput - rotationalInput;
+            rightBackPower = yOutput - xOutput + rotationalInput;
             //THIS IS VERY WRONG, BUT IT WORKS SO IDC!
 
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -102,12 +115,30 @@ public class TeleOp_Starter extends LinearOpMode{
 
             }
             // if max is more than one make it one
+
+            if (faceButtonA && !servoState && !aDebounce) {
+
+                servo.setPower(1);
+                servoState = true;
+                aDebounce = true;
+            }
+
+            if (faceButtonA && servoState && !aDebounce) {
+
+                servo.setPower(0);
+                servoState = false;
+                aDebounce = true;
+            }
+
+            if(!faceButtonA) aDebounce = false;
+
+
+
             leftFrontPower *= speedMultiplier;
             rightFrontPower *= speedMultiplier;
             leftBackPower *= speedMultiplier;
             rightBackPower *= speedMultiplier;
             // multiplies speed by speedMultiplier to actually change it
-
 
             telemetry.addData("xInput yInput", "%4.2f, %4.2f", xInput, yInput);
             telemetry.addData("xOutput yOutput", "%4.2f, %4.2f", xOutput, yOutput);
@@ -123,9 +154,12 @@ public class TeleOp_Starter extends LinearOpMode{
             telemetry.addData("rightTrigger",tRight);
             telemetry.addData("leftTrigger", tLeft);
 
+            telemetry.addData("aPressed", faceButtonA);
+            telemetry.addData("servoState", servoState);
+
             telemetry.update();
 
-            if (faceButtonB && !smoothToggle) {
+            /* if (faceButtonB && !smoothToggle) {
 
                 smoothToggle = true;
 
@@ -138,10 +172,10 @@ public class TeleOp_Starter extends LinearOpMode{
                 smoothToggle = false;
 
             }
-            //this SHOULD make the smoothing toggleable with the b button
+            //this SHOULD make the smoothing toggleable with the b button */
 
-
-
+            mecanumDrive.setMotorPowers(leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
+            //Smoothing is implemented within the setMotorPowers method
 
 
 

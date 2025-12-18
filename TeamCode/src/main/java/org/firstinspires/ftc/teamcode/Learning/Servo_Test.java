@@ -1,47 +1,48 @@
 package org.firstinspires.ftc.teamcode.Learning;
 
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-
-public class Servo_Test extends OpMode {
-    public CRServo servo;
-
+@TeleOp(name = "Servo_Test66")
+public class Servo_Test extends LinearOpMode {
 
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
+
+        CRServo servo;
+
         servo = hardwareMap.get(CRServo.class, "servo");
 
-
-    }
-
-
-    @Override
-    public void loop() {
-
         boolean servoState = false;
+        boolean aDebounce = false;
 
-        boolean faceButtonA = gamepad1.a;
+        waitForStart();
 
+        while(opModeIsActive()) {
 
-        while(true) { //this will be changed to while(opModeIsActive()) when implemented i just don't want to import allat rn
+            boolean faceButtonA = gamepad1.a;
 
-            if (faceButtonA && !servoState) {
+            if (faceButtonA && !servoState && !aDebounce) {
 
                 servo.setPower(1);
                 servoState = true;
+                aDebounce = true;
             }
 
-            if (faceButtonA && servoState) {
+            if (faceButtonA && servoState && !aDebounce) {
 
                 servo.setPower(0);
                 servoState = false;
-
+                aDebounce = true;
             }
 
+            if(!faceButtonA) aDebounce = false;
+
+
+            telemetry.addData("aPressed", faceButtonA);
+            telemetry.addData("servoState", servoState);
+
+            telemetry.update();
         }
-
-
     }
-
 }
