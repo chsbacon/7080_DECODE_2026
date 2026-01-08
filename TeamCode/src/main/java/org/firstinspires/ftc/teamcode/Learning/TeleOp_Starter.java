@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.Learning;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
-
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleOp_Starter")
 public class TeleOp_Starter extends LinearOpMode{
@@ -23,31 +22,49 @@ public class TeleOp_Starter extends LinearOpMode{
 
         double speedMultiplier = 1;
         boolean debounce = false;
-        boolean smoothToggle = false;
+        //boolean smoothToggle = false;
         //variables for speed manipulation
 
-        CRServo servo;
+        DcMotorEx intakeMotorR;
+        DcMotorEx intakeMotorL;
 
-        servo = hardwareMap.get(CRServo.class, "servo");
+        intakeMotorR = hardwareMap.get(DcMotorEx.class, "intakeMotorR");
+        intakeMotorL = hardwareMap.get(DcMotorEx.class, "intakeMotorL");
+
+        CRServo beltServo;
+        Servo launchServo;
+
+        beltServo = hardwareMap.get(CRServo.class, "beltServo");
+        launchServo = hardwareMap.get(Servo.class, "launchServo");
+
+        boolean pd2BumperLDebounce = false;
+
+        double intakeMotorRPower = 0.0;
+        double intakeMotorLPower = 0.0;
 
         boolean servoState = false;
         boolean aDebounce = false;
 
+        boolean pd2yDebounce = false;
+        double servoPosition = 0.0;
+
         while(opModeIsActive()) {
 
-            double max;
+            double maxPower;
 
-            boolean faceButtonA = gamepad1.a;
+            boolean pad2FaceButtonA = gamepad2.a;
+            boolean pad2FaceButtonY = gamepad2.y;
+            boolean pd2BumperLeft = gamepad2.left_bumper;
 
             boolean faceButtonB = gamepad1.b;
 
-            boolean bRight = gamepad1.right_bumper;
-            boolean bLeft = gamepad1.left_bumper;
+            boolean bumperRight = gamepad1.right_bumper;
+            boolean bumperLeft = gamepad1.left_bumper;
             // Bumper controls for speed manipulation
 
-            float tRight = gamepad2.right_trigger;
-            float tLeft = gamepad2.left_trigger;
-            // triggers give a float from 0-1 instead of just a binary because why the hell not
+            float triggerRight = gamepad2.right_trigger;
+            float triggerLeft = gamepad2.left_trigger;
+            // triggers give a float from 0-1 instead of just a boolean because why the hell not
             // trigger PLACEHOLDER controls for the aiming and firing
 
             double xInput = gamepad1.left_stick_x;
@@ -62,77 +79,115 @@ public class TeleOp_Starter extends LinearOpMode{
 
             double leftFrontPower, leftBackPower, rightFrontPower, rightBackPower;
 
+            launchServo.setPosition(servoPosition);
+
+            intakeMotorR.setPower(intakeMotorRPower);
+            intakeMotorL.setPower(intakeMotorLPower);
+
             //Mecanum wheel equations
             leftFrontPower = yOutput + xOutput - rotationalInput;
-            rightFrontPower = yOutput + xOutput + rotationalInput;
+            rightFrontPower = yOutput - xOutput + rotationalInput;
             leftBackPower = yOutput - xOutput - rotationalInput;
-            rightBackPower = yOutput - xOutput + rotationalInput;
+            rightBackPower = yOutput + xOutput + rotationalInput;
             //THIS IS VERY WRONG, BUT IT WORKS SO IDC!
 
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
+            maxPower = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            maxPower = Math.max(maxPower, Math.abs(leftBackPower));
+            maxPower = Math.max(maxPower, Math.abs(rightBackPower));
             //Limits power to 1.0 and translates other values relative to the maximum value
 
-            if (bLeft && !debounce && speedMultiplier > 0.25){
+            if (bumperLeft && !debounce && speedMultiplier > 0.25){
 
                 speedMultiplier -= 0.25;
                 debounce = true;
 
             }
             // decreases speed multiplier
-            if (bRight && !debounce && speedMultiplier < 1){
+            if (bumperRight && !debounce && speedMultiplier < 1){
 
                 speedMultiplier += 0.25;
                 debounce = true;
 
             }
             // increases speed multiplier
-            if(!bRight && !bLeft) debounce = false;
+            if(!bumperRight && !bumperLeft) debounce = false;
 
             if (speedMultiplier < 0.25) speedMultiplier = 0.25;
 
-            if (tLeft > 0.5){
+            if (triggerLeft > 0.5){
 
                 // do something with apriltag, either aiming at them or aiming and moving to a certain spot
 
             }
             // aims at apriltag or moves to certain spot relative to apriltag and also aims at it
 
-            if (tRight > 0.5){
+            if (triggerRight > 0.5){
 
                 // shoot the ball
 
             }
             //shoots ball whe right trigger is pressed
 
-            if (max > 1.0) {
+            if (maxPower > 1.0) {
 
-                leftFrontPower /= max;
-                rightFrontPower /= max;
-                leftBackPower /= max;
-                rightBackPower /= max;
+                leftFrontPower /= maxPower;
+                rightFrontPower /= maxPower;
+                leftBackPower /= maxPower;
+                rightBackPower /= maxPower;
 
             }
-            // if max is more than one make it one
+            // scale beltServo inputs to 1
 
-            if (faceButtonA && !servoState && !aDebounce) {
+            if (pad2FaceButtonA && !servoState && !aDebounce) {
 
-                servo.setPower(1);
+                beltServo.setPower(1);
                 servoState = true;
                 aDebounce = true;
             }
 
-            if (faceButtonA && servoState && !aDebounce) {
+            if (pad2FaceButtonA && servoState && !aDebounce) {
 
-                servo.setPower(0);
+                beltServo.setPower(0);
                 servoState = false;
                 aDebounce = true;
             }
 
-            if(!faceButtonA) aDebounce = false;
+            if(!pad2FaceButtonA) aDebounce = false;
 
+            if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 0.0) {
+                //when y pressed, if debounce is not activated and the servo is at 0 degrees
 
+                servoPosition = 0.5;
+                pd2yDebounce = true;
+
+            }
+
+            if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 0.5) {
+
+                servoPosition = 0.0;
+                pd2yDebounce = true;
+
+            }
+
+            if (!pad2FaceButtonY) pd2yDebounce = false;
+
+            if (pd2BumperLeft && !pd2BumperLDebounce && intakeMotorRPower == 0.0 && intakeMotorLPower == 0.0){
+
+                intakeMotorRPower = -0.5;
+                intakeMotorLPower = 0.5;
+                pd2BumperLDebounce = true;
+
+            }
+
+            if (pd2BumperLeft && !pd2BumperLDebounce && !(intakeMotorRPower == 0) && !(intakeMotorLPower == 0.0)){
+
+                intakeMotorRPower = 0.0;
+                intakeMotorLPower = 0.0;
+                pd2BumperLDebounce = true;
+
+            }
+
+            if (!pd2BumperLeft) pd2BumperLDebounce = false;
 
             leftFrontPower *= speedMultiplier;
             rightFrontPower *= speedMultiplier;
@@ -149,13 +204,22 @@ public class TeleOp_Starter extends LinearOpMode{
             telemetry.addData("Back  Left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 
             telemetry.addData("Speed multiplier", speedMultiplier);
-            telemetry.addData("rightBumper", bRight);
-            telemetry.addData("leftBumper", bLeft);
-            telemetry.addData("rightTrigger",tRight);
-            telemetry.addData("leftTrigger", tLeft);
+            telemetry.addData("rightBumper", bumperRight);
+            telemetry.addData("leftBumper", bumperLeft);
+            telemetry.addData("rightTrigger",triggerRight);
+            telemetry.addData("leftTrigger", triggerLeft);
 
-            telemetry.addData("aPressed", faceButtonA);
+            telemetry.addData("aPressed", pad2FaceButtonA);
             telemetry.addData("servoState", servoState);
+
+            telemetry.addData("yPressed", pad2FaceButtonY);
+            telemetry.addData("servoPositon", launchServo.getPosition());
+            telemetry.addData("launchServoDebounce", pd2yDebounce);
+
+            telemetry.addData("yPressed", pd2BumperLeft);
+            telemetry.addData("intakeMotorRPower", intakeMotorRPower);
+            telemetry.addData("intakeMotorLPower", intakeMotorLPower);
+            telemetry.addData("launchServoDebounce", pd2BumperLDebounce);
 
             telemetry.update();
 
