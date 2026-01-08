@@ -36,11 +36,11 @@ public class MeepMeepTesting {
                 .splineToSplineHeading(new Pose2d(-31.5,21.5, 3*Math.PI/4), 3*Math.PI/4)
                         .waitSeconds(1)
                         .strafeTo(new Vector2d(-28.9, 21.51))
-                        .splineToSplineHeading(new Pose2d(-12, 30, 3*Math.PI/2), Math.PI/2)
+                        .splineToSplineHeading(new Pose2d(-12, 30, Math.PI/2), Math.PI/2)
 
                         .strafeTo(new Vector2d(-12, 45))
                         .waitSeconds(1)
-                        .splineToSplineHeading(new Pose2d(-31.5,21.5, 3*Math.PI/4), 3*Math.PI/4)
+                        .splineToSplineHeading(new Pose2d(-31.5,21.5, Math.PI/4), 3*Math.PI/4)
                         .waitSeconds(1)
                         .strafeTo(new Vector2d(-28.9, 21.51))
                         .splineToSplineHeading(new Pose2d(12, 30, 3*Math.PI/2), Math.PI/2)
