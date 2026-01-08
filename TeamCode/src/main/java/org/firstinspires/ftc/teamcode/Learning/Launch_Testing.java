@@ -4,7 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 @TeleOp(name = "Motor_Test66")
-public class Launch_Test extends LinearOpMode {
+public class Launch_Testing
+        extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
