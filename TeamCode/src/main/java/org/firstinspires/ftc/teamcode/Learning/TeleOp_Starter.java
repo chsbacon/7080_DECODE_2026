@@ -53,7 +53,7 @@ public class TeleOp_Starter extends LinearOpMode{
         boolean aDebounce = false;
 
         boolean pd2yDebounce = false;
-        double servoPosition = 0.0;
+        double servoPosition = 0.3;
 
         while(opModeIsActive()) {
 
@@ -130,13 +130,8 @@ public class TeleOp_Starter extends LinearOpMode{
 
             }
             // aims at apriltag or moves to certain spot relative to apriltag and also aims at it
+            // PROBABLY NOT GETTING DONE IGNORE PLEASE
 
-            if (triggerRight > 0.5){
-
-                // shoot the ball
-
-            }
-            //shoots ball whe right trigger is pressed
 
             if (maxPower > 1.0) {
 
@@ -164,15 +159,15 @@ public class TeleOp_Starter extends LinearOpMode{
 
             if(!pad2FaceButtonA) aDebounce = false;
 
-            if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 0.0) {
+            if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 0.3) {
                 //when y pressed, if debounce is not activated and the servo is at 0 degrees
 
-                servoPosition = 1;
+                servoPosition = 1.0;
                 pd2yDebounce = true;
 
             }
 
-            if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 0.5) {
+            if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 1.0) {
 
                 servoPosition = 0.3;
                 pd2yDebounce = true;
