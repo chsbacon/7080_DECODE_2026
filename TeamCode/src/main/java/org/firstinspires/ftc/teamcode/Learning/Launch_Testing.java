@@ -17,6 +17,7 @@ public class Launch_Testing
 
         boolean pd2BumperRDebounce = false;
 
+
         double launchMotorRPower = 0.0;
         double launchMotorLPower = 0.0;
 
@@ -33,8 +34,8 @@ public class Launch_Testing
 
             if (pd2BumperRight && !pd2BumperRDebounce && launchMotorRPower == 0.0 && launchMotorLPower == 0.0){
 
-                launchMotorRPower = -0.5;
-                launchMotorLPower = 0.5;
+                launchMotorRPower = -1.0;
+                launchMotorLPower = 1.0;
                 pd2BumperRDebounce = true;
 
             }
@@ -49,7 +50,7 @@ public class Launch_Testing
 
             if (!pd2BumperRight) pd2BumperRDebounce = false;
 
-            telemetry.addData("yPressed", pd2BumperRight);
+            telemetry.addData("pd2rbPressed", pd2BumperRight);
             telemetry.addData("launchMotorRPower", launchMotorRPower);
             telemetry.addData("launchMotorLPower", launchMotorLPower);
             telemetry.addData("launchServoDebounce", pd2BumperRDebounce);

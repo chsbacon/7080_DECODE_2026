@@ -27,7 +27,11 @@ public class TeleOp_Starter extends LinearOpMode{
 
         DcMotorEx intakeMotorR;
         DcMotorEx intakeMotorL;
+        DcMotorEx launchMotorR;
+        DcMotorEx launchMotorL;
 
+        launchMotorR = hardwareMap.get(DcMotorEx.class, "launchMotorR");
+        launchMotorL = hardwareMap.get(DcMotorEx.class, "launchMotorL");
         intakeMotorR = hardwareMap.get(DcMotorEx.class, "intakeMotorR");
         intakeMotorL = hardwareMap.get(DcMotorEx.class, "intakeMotorL");
 
@@ -38,7 +42,10 @@ public class TeleOp_Starter extends LinearOpMode{
         launchServo = hardwareMap.get(Servo.class, "launchServo");
 
         boolean pd2BumperLDebounce = false;
+        boolean pd2BumperRDebounce = false;
 
+        double launchMotorRPower = 0.0;
+        double launchMotorLPower = 0.0;
         double intakeMotorRPower = 0.0;
         double intakeMotorLPower = 0.0;
 
@@ -55,6 +62,7 @@ public class TeleOp_Starter extends LinearOpMode{
             boolean pad2FaceButtonA = gamepad2.a;
             boolean pad2FaceButtonY = gamepad2.y;
             boolean pd2BumperLeft = gamepad2.left_bumper;
+            boolean pd2BumperRight = gamepad2.right_bumper;
 
             boolean faceButtonB = gamepad1.b;
 
@@ -81,6 +89,8 @@ public class TeleOp_Starter extends LinearOpMode{
 
             launchServo.setPosition(servoPosition);
 
+            launchMotorR.setPower(launchMotorRPower);
+            launchMotorL.setPower(launchMotorLPower);
             intakeMotorR.setPower(intakeMotorRPower);
             intakeMotorL.setPower(intakeMotorLPower);
 
@@ -157,14 +167,14 @@ public class TeleOp_Starter extends LinearOpMode{
             if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 0.0) {
                 //when y pressed, if debounce is not activated and the servo is at 0 degrees
 
-                servoPosition = 0.5;
+                servoPosition = 1;
                 pd2yDebounce = true;
 
             }
 
             if (pad2FaceButtonY && !pd2yDebounce && launchServo.getPosition() == 0.5) {
 
-                servoPosition = 0.0;
+                servoPosition = 0.3;
                 pd2yDebounce = true;
 
             }
@@ -189,6 +199,24 @@ public class TeleOp_Starter extends LinearOpMode{
 
             if (!pd2BumperLeft) pd2BumperLDebounce = false;
 
+            if (pd2BumperRight && !pd2BumperRDebounce && launchMotorRPower == 0.0 && launchMotorLPower == 0.0){
+
+                launchMotorRPower = -1.0;
+                launchMotorLPower = 1.0;
+                pd2BumperRDebounce = true;
+
+            }
+
+            if (pd2BumperRight && !pd2BumperRDebounce && !(launchMotorRPower == 0) && !(launchMotorLPower == 0.0)){
+
+                launchMotorRPower = 0.0;
+                launchMotorLPower = 0.0;
+                pd2BumperRDebounce = true;
+
+            }
+
+            if (!pd2BumperRight) pd2BumperRDebounce = false;
+
             leftFrontPower *= speedMultiplier;
             rightFrontPower *= speedMultiplier;
             leftBackPower *= speedMultiplier;
@@ -209,17 +237,22 @@ public class TeleOp_Starter extends LinearOpMode{
             telemetry.addData("rightTrigger",triggerRight);
             telemetry.addData("leftTrigger", triggerLeft);
 
-            telemetry.addData("aPressed", pad2FaceButtonA);
+            telemetry.addData("pd2aPressed", pad2FaceButtonA);
             telemetry.addData("servoState", servoState);
 
-            telemetry.addData("yPressed", pad2FaceButtonY);
+            telemetry.addData("pd2yPressed", pad2FaceButtonY);
             telemetry.addData("servoPositon", launchServo.getPosition());
             telemetry.addData("launchServoDebounce", pd2yDebounce);
 
-            telemetry.addData("yPressed", pd2BumperLeft);
+            telemetry.addData("pd2lbPressed", pd2BumperLeft);
             telemetry.addData("intakeMotorRPower", intakeMotorRPower);
             telemetry.addData("intakeMotorLPower", intakeMotorLPower);
             telemetry.addData("launchServoDebounce", pd2BumperLDebounce);
+
+            telemetry.addData("pd2rbPressed", pd2BumperRight);
+            telemetry.addData("launchMotorRPower", launchMotorRPower);
+            telemetry.addData("launchMotorLPower", launchMotorLPower);
+            telemetry.addData("launchServoDebounce", pd2BumperRDebounce);
 
             telemetry.update();
 
