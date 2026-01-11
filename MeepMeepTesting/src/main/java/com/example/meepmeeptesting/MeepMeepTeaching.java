@@ -15,8 +15,7 @@ public class MeepMeepTeaching {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
-                //All pathways and commands go after this comment!
-
+                .lineToX(5)
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

@@ -87,12 +87,12 @@ public class TeleOp_Starter extends LinearOpMode{
 
             if (pd2BumperLeft && !pd2BumperLDebounce && launchMotorPower == 0.0){
 
-                launchMotorPower = 0.625;
+                launchMotorPower = 0.375;
                 pd2BumperLDebounce = true;
 
             }
 
-            if (pd2BumperLeft && !pd2BumperLDebounce && launchMotorPower == 0.625){
+            if (pd2BumperLeft && !pd2BumperLDebounce && launchMotorPower == 0.375){
 
                 launchMotorPower = 0.0;
                 pd2BumperLDebounce = true;

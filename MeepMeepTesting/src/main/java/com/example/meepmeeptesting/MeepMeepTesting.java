@@ -28,10 +28,6 @@ public class MeepMeepTesting {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, 0))
-
-                //.splineTo(new Vector2d(30,30), Math.toRadians(180))
-                //.splineToConstantHeading(new Vector2d(0,0), Math.PI)
-                .splineToSplineHeading(new Pose2d(30,30, 3*Math.PI/2), 3*Math.PI/2)
                 .build());
 
         meepMeep.setBackground(img)
