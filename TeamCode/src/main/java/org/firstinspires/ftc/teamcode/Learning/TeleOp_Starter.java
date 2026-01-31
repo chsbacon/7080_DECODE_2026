@@ -15,50 +15,66 @@ public class TeleOp_Starter extends LinearOpMode{
 
         SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(hardwareMap);
 
+        CRServo launchServoL;
+        CRServo launchServoR;
+
+        //  DcMotorEx intakeMotor;
+        DcMotorEx launchMotorR;
+        DcMotorEx launchMotorL;
+        DcMotorEx beltMotor;
+
         waitForStart();
 
 
-        //DcMotorEx intakeMotorR;
-        //DcMotorEx intakeMotorL;
-        DcMotorEx launchMotorR;
-        DcMotorEx launchMotorL;
+
+        launchServoL = hardwareMap.get(CRServo.class, "launchServoL");
+        launchServoR = hardwareMap.get(CRServo.class, "launchServoR");
 
         launchMotorR = hardwareMap.get(DcMotorEx.class, "launchMotorR");
         launchMotorL = hardwareMap.get(DcMotorEx.class, "launchMotorL");
-        //intakeMotorR = hardwareMap.get(DcMotorEx.class, "intakeMotorR");
-        //intakeMotorL = hardwareMap.get(DcMotorEx.class, "intakeMotorL");
+       // intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
+        beltMotor = hardwareMap.get(DcMotorEx.class, "beltMotor");
 
-        CRServo launchServo;
-
-        launchServo = hardwareMap.get(CRServo.class, "launchServo");
 
         boolean pd2BumperLDebounce = false;
         boolean pd2BumperRDebounce = false;
 
-        double launchMotorPower = 0.0;
+        boolean bumperLDebounce = false;
+
+        double launchMotorPower = 0.5;
         double intakeMotorPower = 0.0;
 
+        boolean intakeState = false;
 
         boolean servoState = false;
 
         boolean servoDebounce = false;
        // boolean launchToggle = false;
 
+        boolean launchState = false;
+        boolean launchDebounce = false;
+
+        double launchModifier = 0.0;
+
         while(opModeIsActive()) {
 
             double maxPower;
 
             boolean pd2BumperLeft = gamepad2.left_bumper;
+            boolean pd2BumperRight = gamepad2.right_bumper;
+            boolean pd2FaceButtonA = gamepad2.a;
+            boolean pd2FaceButtonY = gamepad2.y;
 
-            float pd2TriggerRight = gamepad2.right_trigger;
-            float pd2TriggerLeft = gamepad2.left_trigger;
 
             double xInput = gamepad1.left_stick_x;
             double yInput = gamepad1.left_stick_y;
             double rotationalInput = gamepad1.right_stick_x;
 
-            double pd2YInput = gamepad2.left_stick_y;
-            double pd2LYInput = gamepad2.right_stick_y;
+            boolean bumperLeft = gamepad1.left_bumper;
+
+            double pd2LYInput = gamepad2.left_stick_y;
+            double pd2RYInput = gamepad2.right_stick_y;
+
 
             double[] FOD = mecanumDrive.fieldOrientedDrive(xInput, yInput);
 
@@ -67,14 +83,15 @@ public class TeleOp_Starter extends LinearOpMode{
 
             double leftFrontPower, leftBackPower, rightFrontPower, rightBackPower;
 
-            launchServo.setPower(pd2YInput);
+            launchServoR.setPower(pd2RYInput/2);
+            launchServoL.setPower(-(pd2RYInput/2));
 
-                launchMotorR.setPower(launchMotorPower - (pd2LYInput / 8));
-                launchMotorL.setPower(-(launchMotorPower - (pd2LYInput / 8)));
+            beltMotor.setPower(pd2LYInput);
 
-            //intakeMotorR.setPower(intakeMotorPower);
-            //intakeMotorL.setPower(-intakeMotorPower);
-
+            if(launchState) {
+                launchMotorR.setPower(launchMotorPower+launchModifier);
+                launchMotorL.setPower(-(launchMotorPower+launchModifier));
+            }
 
             leftFrontPower = yOutput - xOutput - rotationalInput;
             rightFrontPower = yOutput - xOutput + rotationalInput;
@@ -85,21 +102,36 @@ public class TeleOp_Starter extends LinearOpMode{
             maxPower = Math.max(maxPower, Math.abs(leftBackPower));
             maxPower = Math.max(maxPower, Math.abs(rightBackPower));
 
-            if (pd2BumperLeft && !pd2BumperLDebounce && launchMotorPower == 0.0){
-
-                launchMotorPower = 0.375;
-                pd2BumperLDebounce = true;
-
-            }
-
-            if (pd2BumperLeft && !pd2BumperLDebounce && launchMotorPower == 0.375){
-
-                launchMotorPower = 0.0;
-                pd2BumperLDebounce = true;
+            if (bumperLeft && !bumperLDebounce && !intakeState) {
+                intakeState = true;
+                bumperLDebounce = true;
 
             }
 
-            if (!pd2BumperLeft && pd2BumperLDebounce) pd2BumperLDebounce = false;
+            if (bumperLeft && !bumperLDebounce && intakeState) {
+                intakeState = false;
+                bumperLDebounce = true;
+            }
+
+            if (!bumperLeft && bumperLDebounce) bumperLDebounce = false;
+
+            if(pd2BumperLeft && !launchDebounce && !launchState){
+                launchState = true;
+                launchDebounce = true;
+            }
+            if(pd2BumperLeft && !launchDebounce && launchState){
+                launchState = false;
+                launchDebounce = true;
+            }
+            if(pd2FaceButtonA && !launchDebounce && launchState && launchModifier != -0.5){
+                launchModifier -= 0.05;
+                launchDebounce = true;
+            }
+            if(pd2FaceButtonY && !launchDebounce && launchState && launchModifier != 0.5){
+                launchModifier += 0.05;
+                launchDebounce = true;
+            }
+            if(!(pd2FaceButtonY && pd2FaceButtonA && pd2BumperRight && pd2BumperLeft) && launchDebounce) launchDebounce = false;
 
             if (maxPower > 1.0) {
 
@@ -117,13 +149,8 @@ public class TeleOp_Starter extends LinearOpMode{
             telemetry.addData("Front Left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  Left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 
-
-            telemetry.addData("rightTrigger",pd2TriggerRight);
-            telemetry.addData("leftTrigger", pd2TriggerLeft);
-
             telemetry.addData("servoState", servoState);
 
-            telemetry.addData("launchServoPower", launchServo.getPower());
             telemetry.addData("launchServoDebounce", servoDebounce);
 
             telemetry.addData("pd2lbPressed", pd2BumperLeft);
