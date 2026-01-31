@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Auto_Period;
 import static java.lang.Math.PI;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 //adding test for pushing to github
-@TeleOp(name="Auto_Main")
+@Autonomous(name="Auto_Main")
 public class Auto_Main extends LinearOpMode {
     @Override
     public void runOpMode() {
